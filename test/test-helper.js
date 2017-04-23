@@ -7,8 +7,16 @@ module.exports.itBlock = itBlock;
 * @param arg - Array containing [excel formula, expected]
 *              where expected is Array of [value, type, subtype] tuples
 */
-function itBlock([formula, expected]) {
-  it(formula, function () {
+function itBlock([formula, expected, options = {}]) {
+  let itFunc = it;
+
+  if (options.only) {
+    itFunc = it.only;
+  } else if (options.skip) {
+    itFunc = it.skip;
+  }
+
+  itFunc(formula, function () {
     const result = getTokens(formula);
     assertTokens(result, expected);
   });

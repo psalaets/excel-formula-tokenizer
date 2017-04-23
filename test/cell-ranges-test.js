@@ -21,14 +21,12 @@ describe('cell ranges', function () {
       ['A1:C1', [
         ['A1:C1', 'operand', 'range']
       ]],
-      // currently failing
-      // ['5:5', [
-      //   ['5:5', 'operand', 'range']
-      // ]],
-      // currently failing
-      // ['5:10', [
-      //   ['5:10', 'operand', 'range']
-      // ]],
+      ['5:5', [
+        ['5:5', 'operand', 'range']
+      ], {skip: true}],
+      ['5:10', [
+        ['5:10', 'operand', 'range']
+      ], {skip: true}],
       ['H:H', [
         ['H:H', 'operand', 'range']
       ]],
