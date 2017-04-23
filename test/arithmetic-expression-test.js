@@ -26,6 +26,9 @@ describe('arithmetic expressions', function () {
       ['-', 'operator-prefix', ''],
       ['1', 'operand', 'number']
     ]],
+    ['+1', [
+      ['1', 'operand', 'number']
+    ]],
     ['1%', [
       ['1', 'operand', 'number'],
       ['%', 'operator-postfix', ''],

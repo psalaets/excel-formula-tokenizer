@@ -11,6 +11,11 @@ describe('functions', function () {
       ['1', 'operand', 'number'],
       ['', 'function', 'stop']
     ]],
+    ['@SUM(1)', [
+      ['SUM', 'function', 'start'],
+      ['1', 'operand', 'number'],
+      ['', 'function', 'stop']
+    ]],
     ['SUM(1, 2)', [
       ['SUM', 'function', 'start'],
       ['1', 'operand', 'number'],
