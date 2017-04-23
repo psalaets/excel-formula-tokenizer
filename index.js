@@ -1,3 +1,5 @@
+module.exports.getTokens = getTokens;
+
 var TOK_TYPE_NOOP      = "noop";
 var TOK_TYPE_OPERAND   = "operand";
 var TOK_TYPE_FUNCTION  = "function";
