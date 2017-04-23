@@ -23,10 +23,10 @@ describe('cell ranges', function () {
       ]],
       ['5:5', [
         ['5:5', 'operand', 'range']
-      ], {skip: true}],
+      ]],
       ['5:10', [
         ['5:10', 'operand', 'range']
-      ], {skip: true}],
+      ]],
       ['H:H', [
         ['H:H', 'operand', 'range']
       ]],

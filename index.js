@@ -442,7 +442,7 @@ function getTokens(formula) {
     }
 
     if ((token.type == TOK_TYPE_OPERAND) && (token.subtype.length == 0)) {
-      if (isNaN(parseFloat(token.value)))
+      if (isNaN(Number(token.value)))
         if ((token.value == 'TRUE') || (token.value == 'FALSE'))
           token.subtype = TOK_SUBTYPE_LOGICAL;
         else
