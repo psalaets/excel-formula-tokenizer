@@ -9,8 +9,13 @@ describe('range operators', function () {
     ]],
     ['A1:C1 A2:C2', [
       ['A1:C1', 'operand', 'range'],
-      // should value be <space> here?
-      ['', 'operator-infix', 'intersect'],
+      [' ', 'operator-infix', 'intersect'],
+      ['A2:C2', 'operand', 'range']
+    ]],
+    // multiple spaces between ranges
+    ['A1:C1  A2:C2', [
+      ['A1:C1', 'operand', 'range'],
+      [' ', 'operator-infix', 'intersect'],
       ['A2:C2', 'operand', 'range']
     ]],
   ]

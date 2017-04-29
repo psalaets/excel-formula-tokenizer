@@ -323,7 +323,7 @@ function tokenize(formula) {
         tokens.add(token, TOK_TYPE_OPERAND);
         token = "";
       }
-      tokens.add("", TOK_TYPE_WSPACE);
+      tokens.add(currentChar(), TOK_TYPE_WSPACE);
       offset += 1;
       while ((currentChar() == " ") && (!EOF())) {
         offset += 1;
