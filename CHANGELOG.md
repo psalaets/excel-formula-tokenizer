@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2017-04-29
+
+### Breaking changes
+
+- Tokenizer function now exported as `tokenize`
+- `tokenize()` returns Array of tokens
+
 ## [1.0.0] - 2017-04-23
 
 ### Added
