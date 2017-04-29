@@ -30,54 +30,54 @@ function createToken(value, type, subtype = '') {
   return {value, type, subtype};
 }
 
-function f_tokens() {
+class Tokens {
+  constructor() {
+    this.items = [];
+    this.index = -1;
+  }
 
-  this.items = [];
-
-  this.add = function(value, type, subtype) {
+  add(value, type, subtype) {
     const token = createToken(value, type, subtype);
     this.addRef(token);
     return token;
-  };
+  }
 
-  this.addRef = function(token) {
+  addRef(token) {
     this.items.push(token);
-  };
+  }
 
-  this.index = -1;
-
-  this.reset = function() {
+  reset() {
     this.index = -1;
-  };
+  }
 
-  this.BOF = function() {
-    return (this.index <= 0);
-  };
+  BOF() {
+    return this.index <= 0;
+  }
 
-  this.EOF = function() {
-    return (this.index >= (this.items.length - 1));
-  };
+  EOF() {
+    return this.index >= this.items.length - 1;
+  }
 
-  this.moveNext = function() {
+  moveNext() {
     if (this.EOF()) return false;
     this.index++;
     return true;
-  };
+  }
 
-  this.current = function() {
+  current() {
     if (this.index == -1) return null;
-    return (this.items[this.index]);
-  };
+    return this.items[this.index];
+  }
 
-  this.next = function() {
+  next() {
     if (this.EOF()) return null;
-    return (this.items[this.index + 1]);
-  };
+    return this.items[this.index + 1];
+  }
 
-  this.previous = function() {
+  previous() {
     if (this.index < 1) return null;
     return (this.items[this.index - 1]);
-  };
+  }
 }
 
 function f_tokenStack() {
@@ -112,7 +112,7 @@ function f_tokenStack() {
 
 function getTokens(formula) {
 
-  var tokens = new f_tokens();
+  var tokens = new Tokens();
   var tokenStack = new f_tokenStack();
 
   var offset = 0;
@@ -412,7 +412,7 @@ function getTokens(formula) {
 
   // move all tokens to a new collection, excluding all unnecessary white-space tokens
 
-  var tokens2 = new f_tokens();
+  var tokens2 = new Tokens();
 
   while (tokens.moveNext()) {
 
@@ -523,7 +523,7 @@ function getTokens(formula) {
 
   // move all tokens to a new collection, excluding all noops
 
-  tokens = new f_tokens();
+  tokens = new Tokens();
 
   while (tokens2.moveNext()) {
     if (tokens2.current().type != TOK_TYPE_NOOP) {
