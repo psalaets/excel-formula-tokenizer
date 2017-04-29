@@ -80,40 +80,45 @@ class Tokens {
   }
 }
 
-function f_tokenStack() {
+class TokenStack {
+  constructor() {
+    this.items = [];
+  }
 
-  this.items = new Array();
-
-  this.push = function(token) {
+  push(token) {
     this.items.push(token);
-  };
+  }
 
-  this.pop = function() {
-    var token = this.items.pop();
+  pop() {
+    const token = this.items.pop();
     return createToken("", token.type, TOK_SUBTYPE_STOP);
-  };
+  }
 
-  this.token = function() {
-    return ((this.items.length > 0) ? this.items[this.items.length - 1] : null);
-  };
+  token() {
+    if (this.items.length > 0) {
+      return this.items[this.items.length - 1];
+    } else {
+      return null;
+    }
+  }
 
-  this.value = function() {
-    return ((this.token()) ? this.token().value : "");
-  };
+  value() {
+    return this.token() ? this.token().value : '';
+  }
 
-  this.type = function() {
-    return ((this.token()) ? this.token().type : "");
-  };
+  type() {
+    return this.token() ? this.token().type : '';
+  }
 
-  this.subtype = function() {
-    return ((this.token()) ? this.token().subtype : "");
-  };
+  subtype() {
+    return this.token() ? this.token().subtype : '';
+  }
 }
 
 function getTokens(formula) {
 
   var tokens = new Tokens();
-  var tokenStack = new f_tokenStack();
+  var tokenStack = new TokenStack();
 
   var offset = 0;
 
