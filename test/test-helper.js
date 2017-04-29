@@ -1,5 +1,5 @@
 const {deepStrictEqual} = require('assert');
-const {getTokens} = require('../');
+const {tokenize} = require('../');
 
 module.exports.itBlock = itBlock;
 
@@ -17,7 +17,7 @@ function itBlock([formula, expected, options = {}]) {
   }
 
   itFunc(formula, function () {
-    const result = getTokens(formula);
+    const result = tokenize(formula);
     assertTokens(result, expected);
   });
 }

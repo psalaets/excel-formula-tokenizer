@@ -1,4 +1,4 @@
-module.exports.getTokens = getTokens;
+module.exports.tokenize = tokenize;
 
 var TOK_TYPE_NOOP      = "noop";
 var TOK_TYPE_OPERAND   = "operand";
@@ -115,7 +115,7 @@ class TokenStack {
   }
 }
 
-function getTokens(formula) {
+function tokenize(formula) {
 
   var tokens = new Tokens();
   var tokenStack = new TokenStack();
