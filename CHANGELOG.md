@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.1] - 2017-04-29
+
+### Fixed
+
+- Range intersection operator is now represented as a single space (was: empty string)
+
 ## [2.0.0] - 2017-04-29
 
 ### Breaking changes
