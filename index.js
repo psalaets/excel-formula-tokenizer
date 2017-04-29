@@ -222,7 +222,7 @@ function getTokens(formula) {
 
     if (("+-").indexOf(currentChar()) != -1) {
       if (token.length > 1) {
-        if (token.match(regexSN)) {
+        if (regexSN.test(token)) {
           token += currentChar();
           offset += 1;
           continue;
