@@ -78,6 +78,10 @@ class Tokens {
     if (this.index < 1) return null;
     return (this.items[this.index - 1]);
   }
+
+  toArray() {
+    return this.items;
+  }
 }
 
 class TokenStack {
@@ -538,5 +542,5 @@ function tokenize(formula) {
 
   tokens.reset();
 
-  return tokens;
+  return tokens.toArray();
 }

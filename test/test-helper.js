@@ -23,20 +23,14 @@ function itBlock([formula, expected, options = {}]) {
 }
 
 /**
-* @param tokens - value from getTokens
+* @param actual - Array of [{value, type, subtype}] tuples
 * @param expected - Array of [value, type, subtype] tuples
 */
-function assertTokens(tokens, expected) {
-  deepStrictEqual(toArray(tokens), expected);
-}
+function assertTokens(actual, expected) {
+  expected = expected.map(tuple => {
+    const [value, type, subtype] = tuple;
+    return {value, type, subtype};
+  });
 
-function toArray(tokens) {
-  const array = [];
-
-  while (tokens.moveNext()) {
-    const {value, type, subtype} = tokens.current();
-    array.push([value, type, subtype]);
-  }
-
-  return array;
+  deepStrictEqual(actual, expected);
 }
