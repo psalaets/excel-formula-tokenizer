@@ -26,20 +26,16 @@ var TOK_SUBTYPE_INTERSECT   = "intersect";
 var TOK_SUBTYPE_UNION       = "union";
 
 
-function f_token(value, type, subtype) {
-  this.value = value;
-  this.type = type;
-  this.subtype = subtype;
+function createToken(value, type, subtype = '') {
+  return {value, type, subtype};
 }
 
 function f_tokens() {
 
-  this.items = new Array();
+  this.items = [];
 
   this.add = function(value, type, subtype) {
-    if (!subtype) subtype = "";
-
-    token = new f_token(value, type, subtype);
+    const token = createToken(value, type, subtype);
     this.addRef(token);
     return token;
   };
@@ -94,7 +90,7 @@ function f_tokenStack() {
 
   this.pop = function() {
     var token = this.items.pop();
-    return (new f_token("", token.type, TOK_SUBTYPE_STOP));
+    return createToken("", token.type, TOK_SUBTYPE_STOP);
   };
 
   this.token = function() {
