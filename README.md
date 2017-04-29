@@ -15,18 +15,16 @@ or
 ## Usage
 
 ```js
-const {getTokens} = require('excel-formula-tokenizer');
+const {tokenize} = require('excel-formula-tokenizer');
 
-const tokens = getTokens('SUM(1, 2)');
+const tokens = tokenize('SUM(1, 2)');
 
-while (tokens.moveNext()) {
-  const {value, type, subtype} = tokens.current();
-
-  console.log(`token value:   ${value}`);
-  console.log(`token type:    ${type}`);
-  console.log(`token subtype: ${subtype}`);
+tokens.forEach({value, type, subtype} => {
+  console.log(`value:   ${value}`);
+  console.log(`type:    ${type}`);
+  console.log(`subtype: ${subtype}`);
   console.log();
-}
+});
 ```
 
 ## License
