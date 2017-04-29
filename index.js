@@ -36,32 +36,82 @@ function f_tokens() {
 
   this.items = new Array();
 
-  this.add = function(value, type, subtype) { if (!subtype) subtype = ""; token = new f_token(value, type, subtype); this.addRef(token); return token; };
-  this.addRef = function(token) { this.items.push(token); };
+  this.add = function(value, type, subtype) {
+    if (!subtype) subtype = "";
+
+    token = new f_token(value, type, subtype);
+    this.addRef(token);
+    return token;
+  };
+
+  this.addRef = function(token) {
+    this.items.push(token);
+  };
 
   this.index = -1;
-  this.reset = function() { this.index = -1; };
-  this.BOF = function() { return (this.index <= 0); };
-  this.EOF = function() { return (this.index >= (this.items.length - 1)); };
-  this.moveNext = function() { if (this.EOF()) return false; this.index++; return true; };
-  this.current = function() { if (this.index == -1) return null; return (this.items[this.index]); };
-  this.next = function() { if (this.EOF()) return null; return (this.items[this.index + 1]); };
-  this.previous = function() { if (this.index < 1) return null; return (this.items[this.index - 1]); };
 
+  this.reset = function() {
+    this.index = -1;
+  };
+
+  this.BOF = function() {
+    return (this.index <= 0);
+  };
+
+  this.EOF = function() {
+    return (this.index >= (this.items.length - 1));
+  };
+
+  this.moveNext = function() {
+    if (this.EOF()) return false;
+    this.index++;
+    return true;
+  };
+
+  this.current = function() {
+    if (this.index == -1) return null;
+    return (this.items[this.index]);
+  };
+
+  this.next = function() {
+    if (this.EOF()) return null;
+    return (this.items[this.index + 1]);
+  };
+
+  this.previous = function() {
+    if (this.index < 1) return null;
+    return (this.items[this.index - 1]);
+  };
 }
 
 function f_tokenStack() {
 
   this.items = new Array();
 
-  this.push = function(token) { this.items.push(token); };
-  this.pop = function() { var token = this.items.pop(); return (new f_token("", token.type, TOK_SUBTYPE_STOP)); };
+  this.push = function(token) {
+    this.items.push(token);
+  };
 
-  this.token = function() { return ((this.items.length > 0) ? this.items[this.items.length - 1] : null); };
-  this.value = function() { return ((this.token()) ? this.token().value : ""); };
-  this.type = function() { return ((this.token()) ? this.token().type : ""); };
-  this.subtype = function() { return ((this.token()) ? this.token().subtype : ""); };
+  this.pop = function() {
+    var token = this.items.pop();
+    return (new f_token("", token.type, TOK_SUBTYPE_STOP));
+  };
 
+  this.token = function() {
+    return ((this.items.length > 0) ? this.items[this.items.length - 1] : null);
+  };
+
+  this.value = function() {
+    return ((this.token()) ? this.token().value : "");
+  };
+
+  this.type = function() {
+    return ((this.token()) ? this.token().type : "");
+  };
+
+  this.subtype = function() {
+    return ((this.token()) ? this.token().subtype : "");
+  };
 }
 
 function getTokens(formula) {
@@ -84,11 +134,12 @@ function getTokens(formula) {
   var inError = false;
 
   while (formula.length > 0) {
-    if (formula.substr(0, 1) == " ")
+    if (formula.substr(0, 1) == " ") {
       formula = formula.substr(1);
-    else {
-      if (formula.substr(0, 1) == "=")
+    } else {
+      if (formula.substr(0, 1) == "=") {
         formula = formula.substr(1);
+      }
       break;
     }
   }
@@ -372,21 +423,27 @@ function getTokens(formula) {
     token = tokens.current();
 
     if (token.type == TOK_TYPE_WSPACE) {
-      if ((tokens.BOF()) || (tokens.EOF())) {}
-      else if (!(
+      if ((tokens.BOF()) || (tokens.EOF())) {
+        // no-op
+      } else if (!(
                  ((tokens.previous().type == TOK_TYPE_FUNCTION) && (tokens.previous().subtype == TOK_SUBTYPE_STOP)) ||
                  ((tokens.previous().type == TOK_TYPE_SUBEXPR) && (tokens.previous().subtype == TOK_SUBTYPE_STOP)) ||
                  (tokens.previous().type == TOK_TYPE_OPERAND)
                 )
-              ) {}
+              ) {
+                // no-op
+              }
       else if (!(
                  ((tokens.next().type == TOK_TYPE_FUNCTION) && (tokens.next().subtype == TOK_SUBTYPE_START)) ||
                  ((tokens.next().type == TOK_TYPE_SUBEXPR) && (tokens.next().subtype == TOK_SUBTYPE_START)) ||
                  (tokens.next().type == TOK_TYPE_OPERAND)
                  )
-               ) {}
-      else
+               ) {
+                 // no-op
+               }
+      else {
         tokens2.add(token.value, TOK_TYPE_OP_IN, TOK_SUBTYPE_INTERSECT);
+      }
       continue;
     }
 
@@ -402,59 +459,65 @@ function getTokens(formula) {
     token = tokens2.current();
 
     if ((token.type == TOK_TYPE_OP_IN) && (token.value == "-")) {
-      if (tokens2.BOF())
+      if (tokens2.BOF()) {
         token.type = TOK_TYPE_OP_PRE;
-      else if (
+      } else if (
                ((tokens2.previous().type == TOK_TYPE_FUNCTION) && (tokens2.previous().subtype == TOK_SUBTYPE_STOP)) ||
                ((tokens2.previous().type == TOK_TYPE_SUBEXPR) && (tokens2.previous().subtype == TOK_SUBTYPE_STOP)) ||
                (tokens2.previous().type == TOK_TYPE_OP_POST) ||
                (tokens2.previous().type == TOK_TYPE_OPERAND)
-              )
+             ) {
         token.subtype = TOK_SUBTYPE_MATH;
-      else
+      } else {
         token.type = TOK_TYPE_OP_PRE;
+      }
       continue;
     }
 
     if ((token.type == TOK_TYPE_OP_IN) && (token.value == "+")) {
-      if (tokens2.BOF())
+      if (tokens2.BOF()) {
         token.type = TOK_TYPE_NOOP;
-      else if (
+      } else if (
                ((tokens2.previous().type == TOK_TYPE_FUNCTION) && (tokens2.previous().subtype == TOK_SUBTYPE_STOP)) ||
                ((tokens2.previous().type == TOK_TYPE_SUBEXPR) && (tokens2.previous().subtype == TOK_SUBTYPE_STOP)) ||
                (tokens2.previous().type == TOK_TYPE_OP_POST) ||
                (tokens2.previous().type == TOK_TYPE_OPERAND)
-              )
+             ) {
         token.subtype = TOK_SUBTYPE_MATH;
-      else
+      } else {
         token.type = TOK_TYPE_NOOP;
+      }
       continue;
     }
 
     if ((token.type == TOK_TYPE_OP_IN) && (token.subtype.length == 0)) {
-      if (("<>=").indexOf(token.value.substr(0, 1)) != -1)
+      if (("<>=").indexOf(token.value.substr(0, 1)) != -1) {
         token.subtype = TOK_SUBTYPE_LOGICAL;
-      else if (token.value == "&")
+      } else if (token.value == "&") {
         token.subtype = TOK_SUBTYPE_CONCAT;
-      else
+      } else {
         token.subtype = TOK_SUBTYPE_MATH;
+      }
       continue;
     }
 
     if ((token.type == TOK_TYPE_OPERAND) && (token.subtype.length == 0)) {
-      if (isNaN(Number(token.value)))
-        if ((token.value == 'TRUE') || (token.value == 'FALSE'))
+      if (isNaN(Number(token.value))) {
+        if ((token.value == 'TRUE') || (token.value == 'FALSE')) {
           token.subtype = TOK_SUBTYPE_LOGICAL;
-        else
+        } else {
           token.subtype = TOK_SUBTYPE_RANGE;
-      else
+        }
+      } else {
         token.subtype = TOK_SUBTYPE_NUMBER;
+      }
       continue;
     }
 
     if (token.type == TOK_TYPE_FUNCTION) {
-      if (token.value.substr(0, 1) == "@")
+      if (token.value.substr(0, 1) == "@") {
         token.value = token.value.substr(1);
+      }
       continue;
     }
 
@@ -467,8 +530,9 @@ function getTokens(formula) {
   tokens = new f_tokens();
 
   while (tokens2.moveNext()) {
-    if (tokens2.current().type != TOK_TYPE_NOOP)
+    if (tokens2.current().type != TOK_TYPE_NOOP) {
       tokens.addRef(tokens2.current());
+    }
   }
 
   tokens.reset();
