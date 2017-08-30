@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2017-08-30
+
+### Added
+
+- TypeScript support
+
 ## [2.0.1] - 2017-04-29
 
 ### Fixed
