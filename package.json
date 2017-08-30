@@ -3,6 +3,7 @@
   "version": "2.0.1",
   "description": "Tokenize Excel formulas",
   "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "mocha test/*-test.js"
   },
