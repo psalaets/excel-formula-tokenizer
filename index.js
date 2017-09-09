@@ -125,11 +125,12 @@ function tokenize(formula, options) {
   options = options || {};
   options.language = options.language || 'en-US';
 
-  if (!(options.language in languages)) {
-    throw new Error('Invalid language. Expected one of ' + Object.keys(languages).sort().join(', '));
-  }
-
   var language = languages[options.language];
+  if (!language) {
+    var msg = 'Invalid language ' + options.language + '. Expected one of: '
+      + Object.keys(languages).sort().join(', ');
+    throw new Error(msg);
+  }
 
   var tokens = new Tokens();
   var tokenStack = new TokenStack();
