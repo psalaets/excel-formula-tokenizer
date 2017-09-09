@@ -1,10 +1,12 @@
 module.exports = {
   'en-US': {
     true: 'TRUE',
-    false: 'FALSE'
+    false: 'FALSE',
+    argumentSeparator: ','
   },
   'de-DE': {
     true: 'WAHR',
-    false: 'FALSCH'
+    false: 'FALSCH',
+    argumentSeparator: ';'
   }
 };

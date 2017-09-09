@@ -246,6 +246,34 @@ function tokenize(formula, options) {
 
     // independent character evaulation (order not important)
 
+    // function, subexpression, array parameters
+
+    if (currentChar() == language.argumentSeparator) {
+      if (token.length > 0) {
+        tokens.add(token, TOK_TYPE_OPERAND);
+        token = "";
+      }
+
+      if (tokenStack.type() == TOK_TYPE_FUNCTION) {
+        tokens.add(",", TOK_TYPE_ARGUMENT);
+
+        offset += 1;
+        continue;
+      }
+    }
+
+    if (currentChar() == ",") {
+      if (token.length > 0) {
+        tokens.add(token, TOK_TYPE_OPERAND);
+        token = "";
+      }
+
+      tokens.add(currentChar(), TOK_TYPE_OP_IN, TOK_SUBTYPE_UNION);
+
+      offset += 1;
+      continue;
+    }
+
     // establish state-dependent character evaluations
 
     if (currentChar() == "\"") {
@@ -385,22 +413,6 @@ function tokenize(formula, options) {
         token = "";
       } else {
         tokenStack.push(tokens.add("", TOK_TYPE_SUBEXPR, TOK_SUBTYPE_START));
-      }
-      offset += 1;
-      continue;
-    }
-
-    // function, subexpression, array parameters
-
-    if (currentChar() == ",") {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
-      }
-      if (!(tokenStack.type() == TOK_TYPE_FUNCTION)) {
-        tokens.add(currentChar(), TOK_TYPE_OP_IN, TOK_SUBTYPE_UNION);
-      } else {
-        tokens.add(currentChar(), TOK_TYPE_ARGUMENT);
       }
       offset += 1;
       continue;
