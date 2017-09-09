@@ -10,4 +10,22 @@ describe('logical expressions', function () {
     ]],
   ]
   .forEach(itBlock);
+
+  describe('i18n', function () {
+    describe('de-DE', function () {
+      var options = {
+        language: 'de-DE'
+      };
+  
+      [
+        ['WAHR', [
+          ['TRUE', 'operand', 'logical']
+        ], options],
+        ['FALSCH', [
+          ['FALSE', 'operand', 'logical']
+        ], options]
+      ]
+      .forEach(itBlock);
+    });
+  });
 });

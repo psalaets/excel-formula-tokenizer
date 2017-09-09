@@ -1,3 +1,5 @@
+var languages = require('./languages');
+
 module.exports.tokenize = tokenize;
 
 var TOK_TYPE_NOOP      = "noop";
@@ -119,7 +121,15 @@ class TokenStack {
   }
 }
 
-function tokenize(formula) {
+function tokenize(formula, options) {
+  options = options || {};
+  options.language = options.language || 'en-US';
+
+  if (!(options.language in languages)) {
+    throw new Error('Invalid language. Expected one of ' + Object.keys(languages).sort().join(', '));
+  }
+
+  var language = languages[options.language];
 
   var tokens = new Tokens();
   var tokenStack = new TokenStack();
@@ -508,8 +518,12 @@ function tokenize(formula) {
 
     if ((token.type == TOK_TYPE_OPERAND) && (token.subtype.length == 0)) {
       if (isNaN(Number(token.value))) {
-        if ((token.value == 'TRUE') || (token.value == 'FALSE')) {
+        if (token.value == language.true) {
           token.subtype = TOK_SUBTYPE_LOGICAL;
+          token.value = 'TRUE';
+        } else if (token.value == language.false) {
+          token.subtype = TOK_SUBTYPE_LOGICAL;
+          token.value = 'FALSE';
         } else {
           token.subtype = TOK_SUBTYPE_RANGE;
         }
