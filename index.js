@@ -127,7 +127,7 @@ function tokenize(formula, options) {
 
   var language = languages[options.language];
   if (!language) {
-    var msg = 'Invalid language ' + options.language + '. Expected one of: '
+    var msg = 'Unsupported language ' + options.language + '. Expected one of: '
       + Object.keys(languages).sort().join(', ');
     throw new Error(msg);
   }
