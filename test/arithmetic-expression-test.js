@@ -8,6 +8,9 @@ describe('arithmetic expressions', function () {
     ['1.5', [
       ['1.5', 'operand', 'number']
     ]],
+    ['11.55', [
+      ['11.55', 'operand', 'number']
+    ]],
     ['1.5E-10', [
       ['1.5E-10', 'operand', 'number']
     ]],
@@ -67,6 +70,9 @@ describe('arithmetic expressions', function () {
         ], options],
         ['1,5', [
           ['1.5', 'operand', 'number']
+        ], options],
+        ['11,55', [
+          ['11.55', 'operand', 'number']
         ], options],
         ['1,5E-10', [
           ['1.5E-10', 'operand', 'number']
