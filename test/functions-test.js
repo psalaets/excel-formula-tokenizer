@@ -44,6 +44,15 @@ describe('functions', function () {
       };
 
       [
+        ['=WENN(WAHR;1,1;1,2)', [
+          ['WENN', 'function', 'start'],
+          ['TRUE', 'operand', 'logical'],
+          [',', 'argument', ''],
+          ['1.1', 'operand', 'number'],
+          [',', 'argument', ''],
+          ['1.2', 'operand', 'number'],
+          ['', 'function', 'stop']
+        ], options],
         ['SUM(1; 2)', [
           ['SUM', 'function', 'start'],
           ['1', 'operand', 'number'],
