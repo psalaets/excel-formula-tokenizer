@@ -2,11 +2,17 @@ module.exports = {
   'en-US': {
     true: 'TRUE',
     false: 'FALSE',
-    argumentSeparator: ','
+    argumentSeparator: ',',
+    decimalSeparator: '.',
+    reformatNumberForJsParsing: function(n) {return n;}
   },
   'de-DE': {
     true: 'WAHR',
     false: 'FALSCH',
-    argumentSeparator: ';'
+    argumentSeparator: ';',
+    decimalSeparator: ',',
+    reformatNumberForJsParsing: function(n) {
+      return n.replace(',', '.');
+    }
   }
 };

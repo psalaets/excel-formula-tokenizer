@@ -5,6 +5,9 @@ describe('arithmetic expressions', function () {
     ['1', [
       ['1', 'operand', 'number']
     ]],
+    ['1.5', [
+      ['1.5', 'operand', 'number']
+    ]],
     ['1.5E-10', [
       ['1.5E-10', 'operand', 'number']
     ]],
@@ -51,4 +54,29 @@ describe('arithmetic expressions', function () {
     ]],
   ]
   .forEach(itBlock);
+
+  describe('i18n', function () {
+    describe('de-DE', function () {
+      var options = {
+        language: 'de-DE'
+      };
+
+      [
+        ['1', [
+          ['1', 'operand', 'number']
+        ], options],
+        ['1,5', [
+          ['1.5', 'operand', 'number']
+        ], options],
+        ['1,5E-10', [
+          ['1.5E-10', 'operand', 'number']
+        ], options],
+        ['1 + 2', [
+          ['1', 'operand', 'number'],
+          ['+', 'operator-infix', 'math'],
+          ['2', 'operand', 'number']
+        ], options],
+      ].forEach(itBlock);
+    });
+  });
 });

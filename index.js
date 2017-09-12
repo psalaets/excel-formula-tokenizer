@@ -141,6 +141,32 @@ function tokenize(formula, options) {
   var doubleChar  = function() { return formula.substr(offset, 2); };
   var nextChar    = function() { return formula.substr(offset + 1, 1); };
   var EOF         = function() { return (offset >= formula.length); };
+  var isPreviousNonDigitBlank = function() {
+    var offsetCopy = offset;
+    if (offsetCopy == 0) return true;
+
+    while (offsetCopy > 0) {
+      if (!/\d/.test(formula[offsetCopy])) {
+        return /\s/.test(formula[offsetCopy]);
+      }
+
+      offsetCopy -= 1;
+    }
+    return false;
+  };
+
+  var isNextNonDigitTheRangeOperator = function() {
+    var offsetCopy = offset;
+
+    while (offsetCopy < formula.length) {
+      if (!/\d/.test(formula[offsetCopy])) {
+        return /:/.test(formula[offsetCopy]);
+      }
+
+      offsetCopy += 1;
+    }
+    return false;
+  };
 
   var token = "";
 
@@ -148,6 +174,7 @@ function tokenize(formula, options) {
   var inPath = false;
   var inRange = false;
   var inError = false;
+  var inNumeric = false;
 
   while (formula.length > 0) {
     if (formula.substr(0, 1) == " ") {
@@ -233,6 +260,20 @@ function tokenize(formula, options) {
       continue;
     }
 
+    if (inNumeric) {
+      if ([language.decimalSeparator, 'E', '+', '-'].indexOf(currentChar()) != -1 || /\d/.test(currentChar())) {
+        inNumeric = true;
+        token += currentChar();
+
+        offset += 1;
+        continue;
+      } else {
+        inNumeric = false;
+        tokens.add(token, TOK_TYPE_OPERAND, TOK_SUBTYPE_NUMBER);
+        token = "";
+      }
+    }
+
     // scientific notation check
 
     if (("+-").indexOf(currentChar()) != -1) {
@@ -276,6 +317,13 @@ function tokenize(formula, options) {
     }
 
     // establish state-dependent character evaluations
+
+    if (/\d/.test(currentChar()) && isPreviousNonDigitBlank() && !isNextNonDigitTheRangeOperator()) {
+      inNumeric = true;
+      token += currentChar();
+      offset += 1;
+      continue;
+    }
 
     if (currentChar() == "\"") {
       if (token.length > 0) {
@@ -530,7 +578,7 @@ function tokenize(formula, options) {
     }
 
     if ((token.type == TOK_TYPE_OPERAND) && (token.subtype.length == 0)) {
-      if (isNaN(Number(token.value))) {
+      if (isNaN(Number(language.reformatNumberForJsParsing(token.value)))) {
         if (token.value == language.true) {
           token.subtype = TOK_SUBTYPE_LOGICAL;
           token.value = 'TRUE';
@@ -542,6 +590,7 @@ function tokenize(formula, options) {
         }
       } else {
         token.subtype = TOK_SUBTYPE_NUMBER;
+        token.value = language.reformatNumberForJsParsing(token.value);
       }
       continue;
     }
