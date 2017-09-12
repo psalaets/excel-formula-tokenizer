@@ -3,4 +3,9 @@ export interface Token {
   type: string;
   subtype: string;
 }
-declare function tokenize(str: string): Token[];
+
+export interface Options {
+  language?: 'en-US' | 'de-DE'
+}
+
+declare function tokenize(str: string, options?: Options): Token[];
