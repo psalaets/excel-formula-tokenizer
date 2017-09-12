@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] - 2017-09-11
+
+### Added
+
+- Support for different languages/locales
+
 ## [2.2.0] - 2017-08-30
 
 ### Added
