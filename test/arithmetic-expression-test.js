@@ -11,8 +11,14 @@ describe('arithmetic expressions', function () {
     ['11.55', [
       ['11.55', 'operand', 'number']
     ]],
+    ['1E-1', [
+      ['1E-1', 'operand', 'number']
+    ]],
     ['1.5E-10', [
       ['1.5E-10', 'operand', 'number']
+    ]],
+    ['11.55E+100', [
+      ['11.55E+100', 'operand', 'number']
     ]],
     ['1 + 2', [
       ['1', 'operand', 'number'],
@@ -74,8 +80,14 @@ describe('arithmetic expressions', function () {
         ['11,55', [
           ['11.55', 'operand', 'number']
         ], options],
+        ['1E-1', [
+          ['1E-1', 'operand', 'number']
+        ], options],
         ['1,5E-10', [
           ['1.5E-10', 'operand', 'number']
+        ], options],
+        ['11,55E+100', [
+          ['11.55E+100', 'operand', 'number']
         ], options],
         ['1 + 2', [
           ['1', 'operand', 'number'],
