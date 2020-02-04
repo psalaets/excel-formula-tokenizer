@@ -17,13 +17,23 @@ describe('arithmetic expressions', function () {
     ['1.5E-10', [
       ['1.5E-10', 'operand', 'number']
     ]],
-    ['11.55E+100', [
-      ['11.55E+100', 'operand', 'number']
+    ['1.55E+100', [
+      ['1.55E+100', 'operand', 'number']
     ]],
     ['1 + 2', [
       ['1', 'operand', 'number'],
       ['+', 'operator-infix', 'math'],
       ['2', 'operand', 'number']
+    ]],
+    ['1+2', [
+      ['1', 'operand', 'number'],
+      ['+', 'operator-infix', 'math'],
+      ['2', 'operand', 'number']
+    ]],
+    ['1.1+2.2', [
+      ['1.1', 'operand', 'number'],
+      ['+', 'operator-infix', 'math'],
+      ['2.2', 'operand', 'number']
     ]],
     ['(1 + 2) - 3', [
       ['', 'subexpression', 'start'],
@@ -32,6 +42,13 @@ describe('arithmetic expressions', function () {
       ['2', 'operand', 'number'],
       ['', 'subexpression', 'stop'],
       ['-', 'operator-infix', 'math'],
+      ['3', 'operand', 'number']
+    ]],
+    ['1+2*3', [
+      ['1', 'operand', 'number'],
+      ['+', 'operator-infix', 'math'],
+      ['2', 'operand', 'number'],
+      ['*', 'operator-infix', 'math'],
       ['3', 'operand', 'number']
     ]],
     ['-1', [
@@ -86,13 +103,23 @@ describe('arithmetic expressions', function () {
         ['1,5E-10', [
           ['1.5E-10', 'operand', 'number']
         ], options],
-        ['11,55E+100', [
-          ['11.55E+100', 'operand', 'number']
+        ['1,55E+100', [
+          ['1.55E+100', 'operand', 'number']
         ], options],
         ['1 + 2', [
           ['1', 'operand', 'number'],
           ['+', 'operator-infix', 'math'],
           ['2', 'operand', 'number']
+        ], options],
+        ['1+2', [
+          ['1', 'operand', 'number'],
+          ['+', 'operator-infix', 'math'],
+          ['2', 'operand', 'number']
+        ], options],
+        ['1,1+2,2', [
+          ['1.1', 'operand', 'number'],
+          ['+', 'operator-infix', 'math'],
+          ['2.2', 'operand', 'number']
         ], options],
       ].forEach(itBlock);
     });

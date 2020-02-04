@@ -9,7 +9,12 @@ module.exports = {
     // decimal point in numbers
     decimalSeparator: '.',
     // returns number string that can be parsed by Number()
-    reformatNumberForJsParsing: function(n) {return n;}
+    reformatNumberForJsParsing: function(n) {
+      return n;
+    },
+    isScientificNotation: function(token) {
+      return /^[1-9]{1}(\.[0-9]+)?E{1}$/.test(token);
+    }
   },
   'de-DE': {
     true: 'WAHR',
@@ -18,6 +23,9 @@ module.exports = {
     decimalSeparator: ',',
     reformatNumberForJsParsing: function(n) {
       return n.replace(',', '.');
+    },
+    isScientificNotation: function(token) {
+      return /^[1-9]{1}(,[0-9]+)?E{1}$/.test(token);
     }
   }
 };

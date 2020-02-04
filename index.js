@@ -187,8 +187,6 @@ function tokenize(formula, options) {
     }
   }
 
-  var regexSN = /^[1-9]{1}(\.[0-9]+)?E{1}$/;
-
   while (!EOF()) {
 
     // state-dependent character evaluation (order is important)
@@ -261,15 +259,20 @@ function tokenize(formula, options) {
     }
 
     if (inNumeric) {
-      if ([language.decimalSeparator, 'E', '+', '-'].indexOf(currentChar()) != -1 || /\d/.test(currentChar())) {
-        inNumeric = true;
+      if ([language.decimalSeparator, 'E'].indexOf(currentChar()) != -1 || /\d/.test(currentChar())) {
+        token += currentChar();
+
+        offset += 1;
+        continue;
+      } else if (("+-").indexOf(currentChar()) != -1 && language.isScientificNotation(token)) {
         token += currentChar();
 
         offset += 1;
         continue;
       } else {
         inNumeric = false;
-        tokens.add(token, TOK_TYPE_OPERAND, TOK_SUBTYPE_NUMBER);
+        var jsValue = language.reformatNumberForJsParsing(token);
+        tokens.add(jsValue, TOK_TYPE_OPERAND, TOK_SUBTYPE_NUMBER);
         token = "";
       }
     }
@@ -278,7 +281,7 @@ function tokenize(formula, options) {
 
     if (("+-").indexOf(currentChar()) != -1) {
       if (token.length > 1) {
-        if (regexSN.test(token)) {
+        if (language.isScientificNotation(token)) {
           token += currentChar();
           offset += 1;
           continue;
@@ -318,7 +321,7 @@ function tokenize(formula, options) {
 
     // establish state-dependent character evaluations
 
-    if (/\d/.test(currentChar()) && isPreviousNonDigitBlank() && !isNextNonDigitTheRangeOperator()) {
+    if (/\d/.test(currentChar()) && (!token || isPreviousNonDigitBlank()) && !isNextNonDigitTheRangeOperator()) {
       inNumeric = true;
       token += currentChar();
       offset += 1;
