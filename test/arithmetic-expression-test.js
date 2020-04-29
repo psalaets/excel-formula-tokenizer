@@ -44,6 +44,15 @@ describe('arithmetic expressions', function () {
       ['-', 'operator-infix', 'math'],
       ['3', 'operand', 'number']
     ]],
+    ['    =     (     1.1+2  )   -       3  ', [
+      ['', 'subexpression', 'start'],
+      ['1.1', 'operand', 'number'],
+      ['+', 'operator-infix', 'math'],
+      ['2', 'operand', 'number'],
+      ['', 'subexpression', 'stop'],
+      ['-', 'operator-infix', 'math'],
+      ['3', 'operand', 'number']
+    ]],
     // psalaets/excel-formula-ast#8
     ['=1+2*3', [
       ['1', 'operand', 'number'],
