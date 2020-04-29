@@ -44,7 +44,16 @@ describe('arithmetic expressions', function () {
       ['-', 'operator-infix', 'math'],
       ['3', 'operand', 'number']
     ]],
-    ['1+2*3', [
+    // psalaets/excel-formula-ast#8
+    ['=1+2*3', [
+      ['1', 'operand', 'number'],
+      ['+', 'operator-infix', 'math'],
+      ['2', 'operand', 'number'],
+      ['*', 'operator-infix', 'math'],
+      ['3', 'operand', 'number']
+    ]],
+    // psalaets/excel-formula-ast#8
+    ['= 1+2*3', [
       ['1', 'operand', 'number'],
       ['+', 'operator-infix', 'math'],
       ['2', 'operand', 'number'],
