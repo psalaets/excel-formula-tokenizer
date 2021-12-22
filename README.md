@@ -33,7 +33,7 @@ tokens.forEach({value, type, subtype} => {
 
 - formula - string, excel formula
 - options - optional object
-    - options.language - Language that the formula is in: `'en-US'` or `'de-DE'`
+  - options.language - Language that the formula is in: `'en-US'` or `'de-DE'`
 
 ## License
 
