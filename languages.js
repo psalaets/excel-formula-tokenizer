@@ -4,6 +4,10 @@ module.exports = {
     true: 'TRUE',
     // value for false
     false: 'FALSE',
+    // separates vertical data
+    verticalSeparator: ';',
+    // separates horizatonal data
+    horizontalSeparator: ',',
     // separates function arguments
     argumentSeparator: ',',
     // decimal point in numbers
@@ -16,6 +20,8 @@ module.exports = {
   'de-DE': {
     true: 'WAHR',
     false: 'FALSCH',
+    verticalSeparator: ';',
+    horizontalSeparator: '.',
     argumentSeparator: ';',
     decimalSeparator: ',',
     reformatNumberForJsParsing: function (n) {
