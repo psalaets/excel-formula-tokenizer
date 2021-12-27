@@ -27,6 +27,8 @@ var TOK_SUBTYPE_CONCAT = 'concatenate';
 var TOK_SUBTYPE_INTERSECT = 'intersect';
 var TOK_SUBTYPE_UNION = 'union';
 
+var NEWLINE_MATCHER = /(\r|\n)+/g;
+
 function createToken(value, type, subtype = '') {
   return { value, type, subtype };
 }
@@ -135,6 +137,7 @@ function tokenize(formula, options) {
   var tokenStack = new TokenStack();
 
   var offset = 0;
+  var token = '';
 
   var currentChar = function () {
     return formula.substr(offset, 1);
@@ -175,7 +178,18 @@ function tokenize(formula, options) {
     return false;
   };
 
-  var token = '';
+  var checkAndAddToken = function (value, type, subtype) {
+    const cleanedToken = value.replace(NEWLINE_MATCHER, '');
+
+    // Clear regardless
+    token = '';
+
+    if (cleanedToken.length > 0) {
+      return tokens.add(cleanedToken, type, subtype);
+    }
+
+    return false;
+  };
 
   var inString = false;
   var inPath = false;
@@ -299,11 +313,8 @@ function tokenize(formula, options) {
 
     // function, subexpression, array parameters
 
-    if (currentChar() == language.argumentSeparator) {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = '';
-      }
+    if (currentChar() == language.argumentSeparator && ['ARRAY', 'ARRAYROW'].indexOf(tokenStack.value()) == -1) {
+      checkAndAddToken(token, TOK_TYPE_OPERAND);
 
       if (tokenStack.type() == TOK_TYPE_FUNCTION) {
         tokens.add(',', TOK_TYPE_ARGUMENT);
@@ -313,13 +324,14 @@ function tokenize(formula, options) {
       }
     }
 
-    if (currentChar() == ',') {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = '';
-      }
+    if (currentChar() == language.horizontalSeparator) {
+      checkAndAddToken(token, TOK_TYPE_OPERAND);
 
-      tokens.add(currentChar(), TOK_TYPE_OP_IN, TOK_SUBTYPE_UNION);
+      if (tokenStack.type() == TOK_TYPE_FUNCTION) {
+        tokens.add(',', TOK_TYPE_ARGUMENT);
+      } else {
+        tokens.add(currentChar(), TOK_TYPE_OP_IN, TOK_SUBTYPE_UNION);
+      }
 
       offset += 1;
       continue;
@@ -335,22 +347,18 @@ function tokenize(formula, options) {
     }
 
     if (currentChar() == '"') {
-      if (token.length > 0) {
-        // not expected
-        tokens.add(token, TOK_TYPE_UNKNOWN);
-        token = '';
-      }
+      // not expected
+      checkAndAddToken(token, TOK_TYPE_UNKNOWN);
+
       inString = true;
       offset += 1;
       continue;
     }
 
     if (currentChar() == "'") {
-      if (token.length > 0) {
-        // not expected
-        tokens.add(token, TOK_TYPE_UNKNOWN);
-        token = '';
-      }
+      // not expected
+      checkAndAddToken(token, TOK_TYPE_UNKNOWN);
+
       inPath = true;
       offset += 1;
       continue;
@@ -364,11 +372,9 @@ function tokenize(formula, options) {
     }
 
     if (currentChar() == '#') {
-      if (token.length > 0) {
-        // not expected
-        tokens.add(token, TOK_TYPE_UNKNOWN);
-        token = '';
-      }
+      // not expected
+      checkAndAddToken(token, TOK_TYPE_UNKNOWN);
+
       inError = true;
       token += currentChar();
       offset += 1;
@@ -378,34 +384,32 @@ function tokenize(formula, options) {
     // mark start and end of arrays and array rows
 
     if (currentChar() == '{') {
-      if (token.length > 0) {
-        // not expected
-        tokens.add(token, TOK_TYPE_UNKNOWN);
-        token = '';
-      }
+      // not expected
+      checkAndAddToken(token, TOK_TYPE_UNKNOWN);
+
       tokenStack.push(tokens.add('ARRAY', TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
       tokenStack.push(tokens.add('ARRAYROW', TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
       offset += 1;
       continue;
     }
 
-    if (currentChar() == ';') {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = '';
-      }
+    if (currentChar() == language.verticalSeparator) {
+      checkAndAddToken(token, TOK_TYPE_OPERAND);
+
       tokens.addRef(tokenStack.pop());
-      tokens.add(',', TOK_TYPE_ARGUMENT);
+
+      if (tokenStack.type() == TOK_TYPE_FUNCTION) {
+        tokens.add(',', TOK_TYPE_ARGUMENT);
+      }
+
       tokenStack.push(tokens.add('ARRAYROW', TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
       offset += 1;
       continue;
     }
 
     if (currentChar() == '}') {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = '';
-      }
+      checkAndAddToken(token, TOK_TYPE_OPERAND);
+
       tokens.addRef(tokenStack.pop());
       tokens.addRef(tokenStack.pop());
       offset += 1;
@@ -415,10 +419,8 @@ function tokenize(formula, options) {
     // trim white-space
 
     if (currentChar() == ' ') {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = '';
-      }
+      checkAndAddToken(token, TOK_TYPE_OPERAND);
+
       tokens.add(currentChar(), TOK_TYPE_WSPACE);
       offset += 1;
       while (currentChar() == ' ' && !EOF()) {
@@ -430,10 +432,8 @@ function tokenize(formula, options) {
     // multi-character comparators
 
     if (',>=,<=,<>,'.indexOf(',' + doubleChar() + ',') != -1) {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = '';
-      }
+      checkAndAddToken(token, TOK_TYPE_OPERAND);
+
       tokens.add(doubleChar(), TOK_TYPE_OP_IN, TOK_SUBTYPE_LOGICAL);
       offset += 2;
       continue;
@@ -442,10 +442,8 @@ function tokenize(formula, options) {
     // standard infix operators
 
     if ('+-*/^&=><'.indexOf(currentChar()) != -1) {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = '';
-      }
+      checkAndAddToken(token, TOK_TYPE_OPERAND);
+
       tokens.add(currentChar(), TOK_TYPE_OP_IN);
       offset += 1;
       continue;
@@ -454,10 +452,8 @@ function tokenize(formula, options) {
     // standard postfix operators
 
     if ('%'.indexOf(currentChar()) != -1) {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = '';
-      }
+      checkAndAddToken(token, TOK_TYPE_OPERAND);
+
       tokens.add(currentChar(), TOK_TYPE_OP_POST);
       offset += 1;
       continue;
@@ -466,9 +462,9 @@ function tokenize(formula, options) {
     // start subexpression or function
 
     if (currentChar() == '(') {
-      if (token.length > 0) {
-        tokenStack.push(tokens.add(token, TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
-        token = '';
+      const newToken = checkAndAddToken(token, TOK_TYPE_FUNCTION, TOK_SUBTYPE_START);
+      if (newToken) {
+        tokenStack.push(newToken);
       } else {
         tokenStack.push(tokens.add('', TOK_TYPE_SUBEXPR, TOK_SUBTYPE_START));
       }
@@ -479,10 +475,8 @@ function tokenize(formula, options) {
     // stop subexpression
 
     if (currentChar() == ')') {
-      if (token.length > 0) {
-        tokens.add(token, TOK_TYPE_OPERAND);
-        token = '';
-      }
+      checkAndAddToken(token, TOK_TYPE_OPERAND);
+
       tokens.addRef(tokenStack.pop());
       offset += 1;
       continue;
@@ -495,8 +489,7 @@ function tokenize(formula, options) {
   }
 
   // dump remaining accumulation
-
-  if (token.length > 0) tokens.add(token, TOK_TYPE_OPERAND);
+  checkAndAddToken(token, TOK_TYPE_OPERAND);
 
   // move all tokens to a new collection, excluding all unnecessary white-space tokens
 
