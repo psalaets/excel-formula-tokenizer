@@ -11,6 +11,9 @@ module.exports = {
     // returns number string that can be parsed by Number()
     reformatNumberForJsParsing: function (n) {
       return n;
+    },
+    isScientificNotation: function (token) {
+      return /^[1-9]{1}(\.[0-9]+)?E{1}$/.test(token);
     }
   },
   'de-DE': {
@@ -20,6 +23,9 @@ module.exports = {
     decimalSeparator: ',',
     reformatNumberForJsParsing: function (n) {
       return n.replace(',', '.');
+    },
+    isScientificNotation: function (token) {
+      return /^[1-9]{1}(,[0-9]+)?E{1}$/.test(token);
     }
   }
 };

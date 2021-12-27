@@ -2,11 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.1] - 2020-04-29
+
+### Fixed
+
+- Fixed issue with parsing scientific numbers that caused problems with whitespace.
+
 ## [2.3.0] - 2017-09-11
 
 ### Added
 
-- Support for different languages/locales
+- Support for different languages/locales (not really, it's broken)
 
 ## [2.2.0] - 2017-08-30
 

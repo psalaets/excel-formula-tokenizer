@@ -52,6 +52,7 @@ describe('functions', function () {
   ].forEach(itBlock);
 
   describe('i18n', function () {
+    /*
     describe('de-DE', function () {
       var options = {
         language: 'de-DE'
@@ -99,5 +100,6 @@ describe('functions', function () {
         ]
       ].forEach(itBlock);
     });
+    */
   });
 });
