@@ -9,10 +9,10 @@ module.exports = {
     // decimal point in numbers
     decimalSeparator: '.',
     // returns number string that can be parsed by Number()
-    reformatNumberForJsParsing: function(n) {
+    reformatNumberForJsParsing: function (n) {
       return n;
     },
-    isScientificNotation: function(token) {
+    isScientificNotation: function (token) {
       return /^[1-9]{1}(\.[0-9]+)?E{1}$/.test(token);
     }
   },
@@ -21,10 +21,10 @@ module.exports = {
     false: 'FALSCH',
     argumentSeparator: ';',
     decimalSeparator: ',',
-    reformatNumberForJsParsing: function(n) {
+    reformatNumberForJsParsing: function (n) {
       return n.replace(',', '.');
     },
-    isScientificNotation: function(token) {
+    isScientificNotation: function (token) {
       return /^[1-9]{1}(,[0-9]+)?E{1}$/.test(token);
     }
   }

@@ -16,6 +16,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "mocha": "^3.2.0"
+    "mocha": "^3.2.0",
+    "prettier": "^2.5.1"
   }
 }

@@ -2,34 +2,33 @@ var languages = require('./languages');
 
 module.exports.tokenize = tokenize;
 
-var TOK_TYPE_NOOP      = "noop";
-var TOK_TYPE_OPERAND   = "operand";
-var TOK_TYPE_FUNCTION  = "function";
-var TOK_TYPE_SUBEXPR   = "subexpression";
-var TOK_TYPE_ARGUMENT  = "argument";
-var TOK_TYPE_OP_PRE    = "operator-prefix";
-var TOK_TYPE_OP_IN     = "operator-infix";
-var TOK_TYPE_OP_POST   = "operator-postfix";
-var TOK_TYPE_WSPACE    = "white-space";
-var TOK_TYPE_UNKNOWN   = "unknown"
+var TOK_TYPE_NOOP = 'noop';
+var TOK_TYPE_OPERAND = 'operand';
+var TOK_TYPE_FUNCTION = 'function';
+var TOK_TYPE_SUBEXPR = 'subexpression';
+var TOK_TYPE_ARGUMENT = 'argument';
+var TOK_TYPE_OP_PRE = 'operator-prefix';
+var TOK_TYPE_OP_IN = 'operator-infix';
+var TOK_TYPE_OP_POST = 'operator-postfix';
+var TOK_TYPE_WSPACE = 'white-space';
+var TOK_TYPE_UNKNOWN = 'unknown';
 
-var TOK_SUBTYPE_START       = "start";
-var TOK_SUBTYPE_STOP        = "stop";
+var TOK_SUBTYPE_START = 'start';
+var TOK_SUBTYPE_STOP = 'stop';
 
-var TOK_SUBTYPE_TEXT        = "text";
-var TOK_SUBTYPE_NUMBER      = "number";
-var TOK_SUBTYPE_LOGICAL     = "logical";
-var TOK_SUBTYPE_ERROR       = "error";
-var TOK_SUBTYPE_RANGE       = "range";
+var TOK_SUBTYPE_TEXT = 'text';
+var TOK_SUBTYPE_NUMBER = 'number';
+var TOK_SUBTYPE_LOGICAL = 'logical';
+var TOK_SUBTYPE_ERROR = 'error';
+var TOK_SUBTYPE_RANGE = 'range';
 
-var TOK_SUBTYPE_MATH        = "math";
-var TOK_SUBTYPE_CONCAT      = "concatenate";
-var TOK_SUBTYPE_INTERSECT   = "intersect";
-var TOK_SUBTYPE_UNION       = "union";
-
+var TOK_SUBTYPE_MATH = 'math';
+var TOK_SUBTYPE_CONCAT = 'concatenate';
+var TOK_SUBTYPE_INTERSECT = 'intersect';
+var TOK_SUBTYPE_UNION = 'union';
 
 function createToken(value, type, subtype = '') {
-  return {value, type, subtype};
+  return { value, type, subtype };
 }
 
 class Tokens {
@@ -78,7 +77,7 @@ class Tokens {
 
   previous() {
     if (this.index < 1) return null;
-    return (this.items[this.index - 1]);
+    return this.items[this.index - 1];
   }
 
   toArray() {
@@ -97,7 +96,7 @@ class TokenStack {
 
   pop() {
     const token = this.items.pop();
-    return createToken("", token.type, TOK_SUBTYPE_STOP);
+    return createToken('', token.type, TOK_SUBTYPE_STOP);
   }
 
   token() {
@@ -127,8 +126,8 @@ function tokenize(formula, options) {
 
   var language = languages[options.language];
   if (!language) {
-    var msg = 'Unsupported language ' + options.language + '. Expected one of: '
-      + Object.keys(languages).sort().join(', ');
+    var msg =
+      'Unsupported language ' + options.language + '. Expected one of: ' + Object.keys(languages).sort().join(', ');
     throw new Error(msg);
   }
 
@@ -137,11 +136,19 @@ function tokenize(formula, options) {
 
   var offset = 0;
 
-  var currentChar = function() { return formula.substr(offset, 1); };
-  var doubleChar  = function() { return formula.substr(offset, 2); };
-  var nextChar    = function() { return formula.substr(offset + 1, 1); };
-  var EOF         = function() { return (offset >= formula.length); };
-  var isPreviousNonDigitBlank = function() {
+  var currentChar = function () {
+    return formula.substr(offset, 1);
+  };
+  var doubleChar = function () {
+    return formula.substr(offset, 2);
+  };
+  var nextChar = function () {
+    return formula.substr(offset + 1, 1);
+  };
+  var EOF = function () {
+    return offset >= formula.length;
+  };
+  var isPreviousNonDigitBlank = function () {
     var offsetCopy = offset;
     if (offsetCopy == 0) return true;
 
@@ -155,7 +162,7 @@ function tokenize(formula, options) {
     return false;
   };
 
-  var isNextNonDigitTheRangeOperator = function() {
+  var isNextNonDigitTheRangeOperator = function () {
     var offsetCopy = offset;
 
     while (offsetCopy < formula.length) {
@@ -168,7 +175,7 @@ function tokenize(formula, options) {
     return false;
   };
 
-  var token = "";
+  var token = '';
 
   var inString = false;
   var inPath = false;
@@ -177,10 +184,10 @@ function tokenize(formula, options) {
   var inNumeric = false;
 
   while (formula.length > 0) {
-    if (formula.substr(0, 1) == " ") {
+    if (formula.substr(0, 1) == ' ') {
       formula = formula.substr(1);
     } else {
-      if (formula.substr(0, 1) == "=") {
+      if (formula.substr(0, 1) == '=') {
         formula = formula.substr(1);
       }
       break;
@@ -188,7 +195,6 @@ function tokenize(formula, options) {
   }
 
   while (!EOF()) {
-
     // state-dependent character evaluation (order is important)
 
     // double-quoted strings
@@ -196,14 +202,14 @@ function tokenize(formula, options) {
     // end marks token
 
     if (inString) {
-      if (currentChar() == "\"") {
-        if (nextChar() == "\"") {
-          token += "\"";
+      if (currentChar() == '"') {
+        if (nextChar() == '"') {
+          token += '"';
           offset += 1;
         } else {
           inString = false;
           tokens.add(token, TOK_TYPE_OPERAND, TOK_SUBTYPE_TEXT);
-          token = "";
+          token = '';
         }
       } else {
         token += currentChar();
@@ -236,7 +242,7 @@ function tokenize(formula, options) {
     // end does not mark a token
 
     if (inRange) {
-      if (currentChar() == "]") {
+      if (currentChar() == ']') {
         inRange = false;
       }
       token += currentChar();
@@ -250,10 +256,10 @@ function tokenize(formula, options) {
     if (inError) {
       token += currentChar();
       offset += 1;
-      if ((",#NULL!,#DIV/0!,#VALUE!,#REF!,#NAME?,#NUM!,#N/A,").indexOf("," + token + ",") != -1) {
+      if (',#NULL!,#DIV/0!,#VALUE!,#REF!,#NAME?,#NUM!,#N/A,'.indexOf(',' + token + ',') != -1) {
         inError = false;
         tokens.add(token, TOK_TYPE_OPERAND, TOK_SUBTYPE_ERROR);
-        token = "";
+        token = '';
       }
       continue;
     }
@@ -264,7 +270,7 @@ function tokenize(formula, options) {
 
         offset += 1;
         continue;
-      } else if (("+-").indexOf(currentChar()) != -1 && language.isScientificNotation(token)) {
+      } else if ('+-'.indexOf(currentChar()) != -1 && language.isScientificNotation(token)) {
         token += currentChar();
 
         offset += 1;
@@ -273,13 +279,13 @@ function tokenize(formula, options) {
         inNumeric = false;
         var jsValue = language.reformatNumberForJsParsing(token);
         tokens.add(jsValue, TOK_TYPE_OPERAND, TOK_SUBTYPE_NUMBER);
-        token = "";
+        token = '';
       }
     }
 
     // scientific notation check
 
-    if (("+-").indexOf(currentChar()) != -1) {
+    if ('+-'.indexOf(currentChar()) != -1) {
       if (token.length > 1) {
         if (language.isScientificNotation(token)) {
           token += currentChar();
@@ -296,21 +302,21 @@ function tokenize(formula, options) {
     if (currentChar() == language.argumentSeparator) {
       if (token.length > 0) {
         tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
+        token = '';
       }
 
       if (tokenStack.type() == TOK_TYPE_FUNCTION) {
-        tokens.add(",", TOK_TYPE_ARGUMENT);
+        tokens.add(',', TOK_TYPE_ARGUMENT);
 
         offset += 1;
         continue;
       }
     }
 
-    if (currentChar() == ",") {
+    if (currentChar() == ',') {
       if (token.length > 0) {
         tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
+        token = '';
       }
 
       tokens.add(currentChar(), TOK_TYPE_OP_IN, TOK_SUBTYPE_UNION);
@@ -328,11 +334,11 @@ function tokenize(formula, options) {
       continue;
     }
 
-    if (currentChar() == "\"") {
+    if (currentChar() == '"') {
       if (token.length > 0) {
         // not expected
         tokens.add(token, TOK_TYPE_UNKNOWN);
-        token = "";
+        token = '';
       }
       inString = true;
       offset += 1;
@@ -343,25 +349,25 @@ function tokenize(formula, options) {
       if (token.length > 0) {
         // not expected
         tokens.add(token, TOK_TYPE_UNKNOWN);
-        token = "";
+        token = '';
       }
       inPath = true;
       offset += 1;
       continue;
     }
 
-    if (currentChar() == "[") {
+    if (currentChar() == '[') {
       inRange = true;
       token += currentChar();
       offset += 1;
       continue;
     }
 
-    if (currentChar() == "#") {
+    if (currentChar() == '#') {
       if (token.length > 0) {
         // not expected
         tokens.add(token, TOK_TYPE_UNKNOWN);
-        token = "";
+        token = '';
       }
       inError = true;
       token += currentChar();
@@ -371,34 +377,34 @@ function tokenize(formula, options) {
 
     // mark start and end of arrays and array rows
 
-    if (currentChar() == "{") {
+    if (currentChar() == '{') {
       if (token.length > 0) {
         // not expected
         tokens.add(token, TOK_TYPE_UNKNOWN);
-        token = "";
+        token = '';
       }
-      tokenStack.push(tokens.add("ARRAY", TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
-      tokenStack.push(tokens.add("ARRAYROW", TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
+      tokenStack.push(tokens.add('ARRAY', TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
+      tokenStack.push(tokens.add('ARRAYROW', TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
       offset += 1;
       continue;
     }
 
-    if (currentChar() == ";") {
+    if (currentChar() == ';') {
       if (token.length > 0) {
         tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
+        token = '';
       }
       tokens.addRef(tokenStack.pop());
-      tokens.add(",", TOK_TYPE_ARGUMENT);
-      tokenStack.push(tokens.add("ARRAYROW", TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
+      tokens.add(',', TOK_TYPE_ARGUMENT);
+      tokenStack.push(tokens.add('ARRAYROW', TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
       offset += 1;
       continue;
     }
 
-    if (currentChar() == "}") {
+    if (currentChar() == '}') {
       if (token.length > 0) {
         tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
+        token = '';
       }
       tokens.addRef(tokenStack.pop());
       tokens.addRef(tokenStack.pop());
@@ -408,14 +414,14 @@ function tokenize(formula, options) {
 
     // trim white-space
 
-    if (currentChar() == " ") {
+    if (currentChar() == ' ') {
       if (token.length > 0) {
         tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
+        token = '';
       }
       tokens.add(currentChar(), TOK_TYPE_WSPACE);
       offset += 1;
-      while ((currentChar() == " ") && (!EOF())) {
+      while (currentChar() == ' ' && !EOF()) {
         offset += 1;
       }
       continue;
@@ -423,10 +429,10 @@ function tokenize(formula, options) {
 
     // multi-character comparators
 
-    if ((",>=,<=,<>,").indexOf("," + doubleChar() + ",") != -1) {
+    if (',>=,<=,<>,'.indexOf(',' + doubleChar() + ',') != -1) {
       if (token.length > 0) {
         tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
+        token = '';
       }
       tokens.add(doubleChar(), TOK_TYPE_OP_IN, TOK_SUBTYPE_LOGICAL);
       offset += 2;
@@ -435,10 +441,10 @@ function tokenize(formula, options) {
 
     // standard infix operators
 
-    if (("+-*/^&=><").indexOf(currentChar()) != -1) {
+    if ('+-*/^&=><'.indexOf(currentChar()) != -1) {
       if (token.length > 0) {
         tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
+        token = '';
       }
       tokens.add(currentChar(), TOK_TYPE_OP_IN);
       offset += 1;
@@ -447,10 +453,10 @@ function tokenize(formula, options) {
 
     // standard postfix operators
 
-    if (("%").indexOf(currentChar()) != -1) {
+    if ('%'.indexOf(currentChar()) != -1) {
       if (token.length > 0) {
         tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
+        token = '';
       }
       tokens.add(currentChar(), TOK_TYPE_OP_POST);
       offset += 1;
@@ -459,12 +465,12 @@ function tokenize(formula, options) {
 
     // start subexpression or function
 
-    if (currentChar() == "(") {
+    if (currentChar() == '(') {
       if (token.length > 0) {
         tokenStack.push(tokens.add(token, TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
-        token = "";
+        token = '';
       } else {
-        tokenStack.push(tokens.add("", TOK_TYPE_SUBEXPR, TOK_SUBTYPE_START));
+        tokenStack.push(tokens.add('', TOK_TYPE_SUBEXPR, TOK_SUBTYPE_START));
       }
       offset += 1;
       continue;
@@ -472,10 +478,10 @@ function tokenize(formula, options) {
 
     // stop subexpression
 
-    if (currentChar() == ")") {
+    if (currentChar() == ')') {
       if (token.length > 0) {
         tokens.add(token, TOK_TYPE_OPERAND);
-        token = "";
+        token = '';
       }
       tokens.addRef(tokenStack.pop());
       offset += 1;
@@ -486,7 +492,6 @@ function tokenize(formula, options) {
 
     token += currentChar();
     offset += 1;
-
   }
 
   // dump remaining accumulation
@@ -498,54 +503,51 @@ function tokenize(formula, options) {
   var tokens2 = new Tokens();
 
   while (tokens.moveNext()) {
-
     token = tokens.current();
 
     if (token.type == TOK_TYPE_WSPACE) {
-      if ((tokens.BOF()) || (tokens.EOF())) {
+      if (tokens.BOF() || tokens.EOF()) {
         // no-op
-      } else if (!(
-                 ((tokens.previous().type == TOK_TYPE_FUNCTION) && (tokens.previous().subtype == TOK_SUBTYPE_STOP)) ||
-                 ((tokens.previous().type == TOK_TYPE_SUBEXPR) && (tokens.previous().subtype == TOK_SUBTYPE_STOP)) ||
-                 (tokens.previous().type == TOK_TYPE_OPERAND)
-                )
-              ) {
-                // no-op
-              }
-      else if (!(
-                 ((tokens.next().type == TOK_TYPE_FUNCTION) && (tokens.next().subtype == TOK_SUBTYPE_START)) ||
-                 ((tokens.next().type == TOK_TYPE_SUBEXPR) && (tokens.next().subtype == TOK_SUBTYPE_START)) ||
-                 (tokens.next().type == TOK_TYPE_OPERAND)
-                 )
-               ) {
-                 // no-op
-               }
-      else {
+      } else if (
+        !(
+          (tokens.previous().type == TOK_TYPE_FUNCTION && tokens.previous().subtype == TOK_SUBTYPE_STOP) ||
+          (tokens.previous().type == TOK_TYPE_SUBEXPR && tokens.previous().subtype == TOK_SUBTYPE_STOP) ||
+          tokens.previous().type == TOK_TYPE_OPERAND
+        )
+      ) {
+        // no-op
+      } else if (
+        !(
+          (tokens.next().type == TOK_TYPE_FUNCTION && tokens.next().subtype == TOK_SUBTYPE_START) ||
+          (tokens.next().type == TOK_TYPE_SUBEXPR && tokens.next().subtype == TOK_SUBTYPE_START) ||
+          tokens.next().type == TOK_TYPE_OPERAND
+        )
+      ) {
+        // no-op
+      } else {
         tokens2.add(token.value, TOK_TYPE_OP_IN, TOK_SUBTYPE_INTERSECT);
       }
       continue;
     }
 
     tokens2.addRef(token);
-
   }
 
   // switch infix "-" operator to prefix when appropriate, switch infix "+" operator to noop when appropriate, identify operand
   // and infix-operator subtypes, pull "@" from in front of function names
 
   while (tokens2.moveNext()) {
-
     token = tokens2.current();
 
-    if ((token.type == TOK_TYPE_OP_IN) && (token.value == "-")) {
+    if (token.type == TOK_TYPE_OP_IN && token.value == '-') {
       if (tokens2.BOF()) {
         token.type = TOK_TYPE_OP_PRE;
       } else if (
-               ((tokens2.previous().type == TOK_TYPE_FUNCTION) && (tokens2.previous().subtype == TOK_SUBTYPE_STOP)) ||
-               ((tokens2.previous().type == TOK_TYPE_SUBEXPR) && (tokens2.previous().subtype == TOK_SUBTYPE_STOP)) ||
-               (tokens2.previous().type == TOK_TYPE_OP_POST) ||
-               (tokens2.previous().type == TOK_TYPE_OPERAND)
-             ) {
+        (tokens2.previous().type == TOK_TYPE_FUNCTION && tokens2.previous().subtype == TOK_SUBTYPE_STOP) ||
+        (tokens2.previous().type == TOK_TYPE_SUBEXPR && tokens2.previous().subtype == TOK_SUBTYPE_STOP) ||
+        tokens2.previous().type == TOK_TYPE_OP_POST ||
+        tokens2.previous().type == TOK_TYPE_OPERAND
+      ) {
         token.subtype = TOK_SUBTYPE_MATH;
       } else {
         token.type = TOK_TYPE_OP_PRE;
@@ -553,15 +555,15 @@ function tokenize(formula, options) {
       continue;
     }
 
-    if ((token.type == TOK_TYPE_OP_IN) && (token.value == "+")) {
+    if (token.type == TOK_TYPE_OP_IN && token.value == '+') {
       if (tokens2.BOF()) {
         token.type = TOK_TYPE_NOOP;
       } else if (
-               ((tokens2.previous().type == TOK_TYPE_FUNCTION) && (tokens2.previous().subtype == TOK_SUBTYPE_STOP)) ||
-               ((tokens2.previous().type == TOK_TYPE_SUBEXPR) && (tokens2.previous().subtype == TOK_SUBTYPE_STOP)) ||
-               (tokens2.previous().type == TOK_TYPE_OP_POST) ||
-               (tokens2.previous().type == TOK_TYPE_OPERAND)
-             ) {
+        (tokens2.previous().type == TOK_TYPE_FUNCTION && tokens2.previous().subtype == TOK_SUBTYPE_STOP) ||
+        (tokens2.previous().type == TOK_TYPE_SUBEXPR && tokens2.previous().subtype == TOK_SUBTYPE_STOP) ||
+        tokens2.previous().type == TOK_TYPE_OP_POST ||
+        tokens2.previous().type == TOK_TYPE_OPERAND
+      ) {
         token.subtype = TOK_SUBTYPE_MATH;
       } else {
         token.type = TOK_TYPE_NOOP;
@@ -569,10 +571,10 @@ function tokenize(formula, options) {
       continue;
     }
 
-    if ((token.type == TOK_TYPE_OP_IN) && (token.subtype.length == 0)) {
-      if (("<>=").indexOf(token.value.substr(0, 1)) != -1) {
+    if (token.type == TOK_TYPE_OP_IN && token.subtype.length == 0) {
+      if ('<>='.indexOf(token.value.substr(0, 1)) != -1) {
         token.subtype = TOK_SUBTYPE_LOGICAL;
-      } else if (token.value == "&") {
+      } else if (token.value == '&') {
         token.subtype = TOK_SUBTYPE_CONCAT;
       } else {
         token.subtype = TOK_SUBTYPE_MATH;
@@ -580,7 +582,7 @@ function tokenize(formula, options) {
       continue;
     }
 
-    if ((token.type == TOK_TYPE_OPERAND) && (token.subtype.length == 0)) {
+    if (token.type == TOK_TYPE_OPERAND && token.subtype.length == 0) {
       if (isNaN(Number(language.reformatNumberForJsParsing(token.value)))) {
         if (token.value == language.true) {
           token.subtype = TOK_SUBTYPE_LOGICAL;
@@ -599,12 +601,11 @@ function tokenize(formula, options) {
     }
 
     if (token.type == TOK_TYPE_FUNCTION) {
-      if (token.value.substr(0, 1) == "@") {
+      if (token.value.substr(0, 1) == '@') {
         token.value = token.value.substr(1);
       }
       continue;
     }
-
   }
 
   tokens2.reset();

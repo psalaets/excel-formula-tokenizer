@@ -5,7 +5,7 @@ export interface Token {
 }
 
 export interface Options {
-  language?: 'en-US' | 'de-DE'
+  language?: 'en-US' | 'de-DE';
 }
 
 declare function tokenize(str: string, options?: Options): Token[];
