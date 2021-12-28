@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0] - 2021-12-27
+
+### Fixed
+
+- Big i18n fix (courtesy of [@jlaramie](https://github.com/jlaramie) in
+  [#4](https://github.com/psalaets/excel-formula-tokenizer/pull/4))
+
 ## [2.3.1] - 2020-04-29
 
 ### Fixed
