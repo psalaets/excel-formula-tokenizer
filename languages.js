@@ -33,5 +33,17 @@ module.exports = {
     isScientificNotation: function (token) {
       return /^[1-9]{1}(,[0-9]+)?E{1}$/.test(token);
     }
+  },
+  'en-EU': {
+    verticalSeparator: ';',
+    horizontalSeparator: '.',
+    argumentSeparator: ';',
+    decimalSeparator: ',',
+    reformatNumberForJsParsing: function (n) {
+      return n.replace(',', '.');
+    },
+    isScientificNotation: function (token) {
+      return /^[1-9]{1}(,[0-9]+)?E{1}$/.test(token);
+    }
   }
 };
