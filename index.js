@@ -1,7 +1,5 @@
 var languages = require('./languages');
 
-module.exports.tokenize = tokenize;
-
 var TOK_TYPE_NOOP = 'noop';
 var TOK_TYPE_OPERAND = 'operand';
 var TOK_TYPE_FUNCTION = 'function';
@@ -26,6 +24,40 @@ var TOK_SUBTYPE_MATH = 'math';
 var TOK_SUBTYPE_CONCAT = 'concatenate';
 var TOK_SUBTYPE_INTERSECT = 'intersect';
 var TOK_SUBTYPE_UNION = 'union';
+
+var TOK_VALUE_ARRAY = 'ARRAY';
+var TOK_VALUE_ARRAYROW = 'ARRAYROW';
+var TOK_VALUE_TRUE = 'TRUE';
+var TOK_VALUE_FALSE = 'FALSE';
+
+var TYPES = {
+  TOK_TYPE_NOOP: TOK_TYPE_NOOP,
+  TOK_TYPE_OPERAND: TOK_TYPE_OPERAND,
+  TOK_TYPE_FUNCTION: TOK_TYPE_FUNCTION,
+  TOK_TYPE_SUBEXPR: TOK_TYPE_SUBEXPR,
+  TOK_TYPE_ARGUMENT: TOK_TYPE_ARGUMENT,
+  TOK_TYPE_OP_PRE: TOK_TYPE_OP_PRE,
+  TOK_TYPE_OP_IN: TOK_TYPE_OP_IN,
+  TOK_TYPE_OP_POST: TOK_TYPE_OP_POST,
+  TOK_TYPE_WHITE_SPACE: TOK_TYPE_WSPACE,
+  TOK_TYPE_WSPACE: TOK_TYPE_WSPACE,
+  TOK_TYPE_UNKNOWN: TOK_TYPE_UNKNOWN,
+  TOK_SUBTYPE_START: TOK_SUBTYPE_START,
+  TOK_SUBTYPE_STOP: TOK_SUBTYPE_STOP,
+  TOK_SUBTYPE_TEXT: TOK_SUBTYPE_TEXT,
+  TOK_SUBTYPE_NUMBER: TOK_SUBTYPE_NUMBER,
+  TOK_SUBTYPE_LOGICAL: TOK_SUBTYPE_LOGICAL,
+  TOK_SUBTYPE_ERROR: TOK_SUBTYPE_ERROR,
+  TOK_SUBTYPE_RANGE: TOK_SUBTYPE_RANGE,
+  TOK_SUBTYPE_MATH: TOK_SUBTYPE_MATH,
+  TOK_SUBTYPE_CONCAT: TOK_SUBTYPE_CONCAT,
+  TOK_SUBTYPE_INTERSECT: TOK_SUBTYPE_INTERSECT,
+  TOK_SUBTYPE_UNION: TOK_SUBTYPE_UNION,
+  TOK_VALUE_ARRAY: TOK_VALUE_ARRAY,
+  TOK_VALUE_ARRAYROW: TOK_VALUE_ARRAYROW,
+  TOK_VALUE_TRUE: TOK_VALUE_TRUE,
+  TOK_VALUE_FALSE: TOK_VALUE_FALSE
+};
 
 var NEWLINE_MATCHER = /(\r|\n)+/g;
 
@@ -96,9 +128,9 @@ class TokenStack {
     this.items.push(token);
   }
 
-  pop() {
+  pop(name) {
     const token = this.items.pop();
-    return createToken('', token.type, TOK_SUBTYPE_STOP);
+    return createToken(name || '', token.type, TOK_SUBTYPE_STOP);
   }
 
   token() {
@@ -122,6 +154,15 @@ class TokenStack {
   }
 }
 
+/**
+ * Takes in a formula and parses it into a stack of tokens representing the structure
+ * @param {string} formula
+ * @param {Object} options
+ * @param {string} [options.language] - Defaults to en-US
+ * @param {boolean} [options.preserveLanguage] - Defaults to false. When true language specific characters will be written to the token output instead of being normalized.
+ * @param {boolean} [options.asClass] - Defaults to false. When true tokenize will reutrn the instantiated Tokens class instead of calling Tokens.toArray().
+ * @returns {Token[]|Tokens} - If options.asClass is true then the Tokens class gets return. Otherwise this returns an array of Token objects.
+ */
 function tokenize(formula, options) {
   options = options || {};
   options.language = options.language || 'en-US';
@@ -291,7 +332,7 @@ function tokenize(formula, options) {
         continue;
       } else {
         inNumeric = false;
-        var jsValue = language.reformatNumberForJsParsing(token);
+        var jsValue = options.preserveLanguage ? token : language.reformatNumberForJsParsing(token);
         tokens.add(jsValue, TOK_TYPE_OPERAND, TOK_SUBTYPE_NUMBER);
         token = '';
       }
@@ -313,11 +354,14 @@ function tokenize(formula, options) {
 
     // function, subexpression, array parameters
 
-    if (currentChar() == language.argumentSeparator && ['ARRAY', 'ARRAYROW'].indexOf(tokenStack.value()) == -1) {
+    if (
+      currentChar() == language.argumentSeparator &&
+      [TOK_VALUE_ARRAY, TOK_VALUE_ARRAYROW].indexOf(tokenStack.value()) == -1
+    ) {
       checkAndAddToken(token, TOK_TYPE_OPERAND);
 
       if (tokenStack.type() == TOK_TYPE_FUNCTION) {
-        tokens.add(',', TOK_TYPE_ARGUMENT);
+        tokens.add(options.preserveLanguage ? language.argumentSeparator : ',', TOK_TYPE_ARGUMENT);
 
         offset += 1;
         continue;
@@ -328,7 +372,7 @@ function tokenize(formula, options) {
       checkAndAddToken(token, TOK_TYPE_OPERAND);
 
       if (tokenStack.type() == TOK_TYPE_FUNCTION) {
-        tokens.add(',', TOK_TYPE_ARGUMENT);
+        tokens.add(options.preserveLanguage ? language.argumentSeparator : ',', TOK_TYPE_ARGUMENT);
       } else {
         tokens.add(currentChar(), TOK_TYPE_OP_IN, TOK_SUBTYPE_UNION);
       }
@@ -387,8 +431,8 @@ function tokenize(formula, options) {
       // not expected
       checkAndAddToken(token, TOK_TYPE_UNKNOWN);
 
-      tokenStack.push(tokens.add('ARRAY', TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
-      tokenStack.push(tokens.add('ARRAYROW', TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
+      tokenStack.push(tokens.add(TOK_VALUE_ARRAY, TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
+      tokenStack.push(tokens.add(TOK_VALUE_ARRAYROW, TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
       offset += 1;
       continue;
     }
@@ -396,13 +440,13 @@ function tokenize(formula, options) {
     if (currentChar() == language.verticalSeparator) {
       checkAndAddToken(token, TOK_TYPE_OPERAND);
 
-      tokens.addRef(tokenStack.pop());
+      tokens.addRef(tokenStack.pop(TOK_VALUE_ARRAYROW));
 
       if (tokenStack.type() == TOK_TYPE_FUNCTION) {
         tokens.add(',', TOK_TYPE_ARGUMENT);
       }
 
-      tokenStack.push(tokens.add('ARRAYROW', TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
+      tokenStack.push(tokens.add(TOK_VALUE_ARRAYROW, TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
       offset += 1;
       continue;
     }
@@ -410,8 +454,8 @@ function tokenize(formula, options) {
     if (currentChar() == '}') {
       checkAndAddToken(token, TOK_TYPE_OPERAND);
 
-      tokens.addRef(tokenStack.pop());
-      tokens.addRef(tokenStack.pop());
+      tokens.addRef(tokenStack.pop(TOK_VALUE_ARRAYROW));
+      tokens.addRef(tokenStack.pop(TOK_VALUE_ARRAY));
       offset += 1;
       continue;
     }
@@ -579,16 +623,16 @@ function tokenize(formula, options) {
       if (isNaN(Number(language.reformatNumberForJsParsing(token.value)))) {
         if (token.value == language.true) {
           token.subtype = TOK_SUBTYPE_LOGICAL;
-          token.value = 'TRUE';
+          token.value = options.preserveLanguage ? language.true : TOK_VALUE_TRUE;
         } else if (token.value == language.false) {
           token.subtype = TOK_SUBTYPE_LOGICAL;
-          token.value = 'FALSE';
+          token.value = options.preserveLanguage ? language.false : TOK_VALUE_FALSE;
         } else {
           token.subtype = TOK_SUBTYPE_RANGE;
         }
       } else {
         token.subtype = TOK_SUBTYPE_NUMBER;
-        token.value = language.reformatNumberForJsParsing(token.value);
+        token.value = options.preserveLanguage ? token.value : language.reformatNumberForJsParsing(token.value);
       }
       continue;
     }
@@ -615,5 +659,10 @@ function tokenize(formula, options) {
 
   tokens.reset();
 
-  return tokens.toArray();
+  return options.asClass ? tokens : tokens.toArray();
 }
+
+module.exports.tokenize = tokenize;
+module.exports.TYPES = TYPES;
+module.exports.Tokens = Tokens;
+module.exports.TokenStack = TokenStack;

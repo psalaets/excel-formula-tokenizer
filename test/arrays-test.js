@@ -12,8 +12,8 @@ describe('arrays', function () {
         ['2.1', 'operand', 'number'],
         [',', 'argument', ''],
         ['3.1', 'operand', 'number'],
-        ['', 'function', 'stop'],
-        ['', 'function', 'stop']
+        ['ARRAYROW', 'function', 'stop'],
+        ['ARRAY', 'function', 'stop']
       ]
     ],
     [
@@ -22,16 +22,16 @@ describe('arrays', function () {
         ['ARRAY', 'function', 'start'],
         ['ARRAYROW', 'function', 'start'],
         ['1.1', 'operand', 'number'],
-        ['', 'function', 'stop'],
+        ['ARRAYROW', 'function', 'stop'],
         [',', 'argument', ''],
         ['ARRAYROW', 'function', 'start'],
         ['2.1', 'operand', 'number'],
-        ['', 'function', 'stop'],
+        ['ARRAYROW', 'function', 'stop'],
         [',', 'argument', ''],
         ['ARRAYROW', 'function', 'start'],
         ['3.1', 'operand', 'number'],
-        ['', 'function', 'stop'],
-        ['', 'function', 'stop']
+        ['ARRAYROW', 'function', 'stop'],
+        ['ARRAY', 'function', 'stop']
       ]
     ]
   ].forEach(itBlock);
@@ -53,8 +53,8 @@ describe('arrays', function () {
             ['2.1', 'operand', 'number'],
             [',', 'argument', ''],
             ['3.1', 'operand', 'number'],
-            ['', 'function', 'stop'],
-            ['', 'function', 'stop']
+            ['ARRAYROW', 'function', 'stop'],
+            ['ARRAY', 'function', 'stop']
           ],
           options
         ],
@@ -64,16 +64,16 @@ describe('arrays', function () {
             ['ARRAY', 'function', 'start'],
             ['ARRAYROW', 'function', 'start'],
             ['1.1', 'operand', 'number'],
-            ['', 'function', 'stop'],
+            ['ARRAYROW', 'function', 'stop'],
             [',', 'argument', ''],
             ['ARRAYROW', 'function', 'start'],
             ['2.1', 'operand', 'number'],
-            ['', 'function', 'stop'],
+            ['ARRAYROW', 'function', 'stop'],
             [',', 'argument', ''],
             ['ARRAYROW', 'function', 'start'],
             ['3.1', 'operand', 'number'],
-            ['', 'function', 'stop'],
-            ['', 'function', 'stop']
+            ['ARRAYROW', 'function', 'stop'],
+            ['ARRAY', 'function', 'stop']
           ],
           options
         ]
