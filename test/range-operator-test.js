@@ -26,6 +26,9 @@ describe('range operators', function () {
         [' ', 'operator-infix', 'intersect'],
         ['A2:C2', 'operand', 'range']
       ]
-    ]
+    ],
+    // named ranges
+    ["'Test With Space'!A1:C1", [["'Test With Space'!A1:C1", 'operand', 'range']]],
+    ['TestWithoutSpace!A1:C1', [['TestWithoutSpace!A1:C1', 'operand', 'range']]]
   ].forEach(itBlock);
 });

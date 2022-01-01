@@ -284,6 +284,7 @@ function tokenize(formula, options) {
           offset += 1;
         } else {
           inPath = false;
+          token += "'";
         }
       } else {
         token += currentChar();
@@ -403,6 +404,7 @@ function tokenize(formula, options) {
       // not expected
       checkAndAddToken(token, TOK_TYPE_UNKNOWN);
 
+      token = "'";
       inPath = true;
       offset += 1;
       continue;
