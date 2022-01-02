@@ -97,6 +97,37 @@ describe('arrays', function () {
         ['ARRAYROW', 'function', 'stop'],
         ['ARRAY', 'function', 'stop']
       ]
+    ],
+    // I don't think excel supports this at all but google sheets does
+    [
+      '{{1;2};{3;4}}',
+      [
+        ['ARRAY', 'function', 'start'],
+        ['ARRAYROW', 'function', 'start'],
+        ['ARRAY', 'function', 'start'],
+        ['ARRAYROW', 'function', 'start'],
+        ['1', 'operand', 'number'],
+        ['ARRAYROW', 'function', 'stop'],
+        [';', 'argument', ''],
+        ['ARRAYROW', 'function', 'start'],
+        ['2', 'operand', 'number'],
+        ['ARRAYROW', 'function', 'stop'],
+        ['ARRAY', 'function', 'stop'],
+        ['ARRAYROW', 'function', 'stop'],
+        [';', 'argument', ''],
+        ['ARRAYROW', 'function', 'start'],
+        ['ARRAY', 'function', 'start'],
+        ['ARRAYROW', 'function', 'start'],
+        ['3', 'operand', 'number'],
+        ['ARRAYROW', 'function', 'stop'],
+        [';', 'argument', ''],
+        ['ARRAYROW', 'function', 'start'],
+        ['4', 'operand', 'number'],
+        ['ARRAYROW', 'function', 'stop'],
+        ['ARRAY', 'function', 'stop'],
+        ['ARRAYROW', 'function', 'stop'],
+        ['ARRAY', 'function', 'stop']
+      ]
     ]
   ].forEach(itBlock);
 
@@ -202,6 +233,38 @@ describe('arrays', function () {
             ['ARRAYROW', 'function', 'stop'],
             ['ARRAY', 'function', 'stop'],
             // End
+            ['ARRAYROW', 'function', 'stop'],
+            ['ARRAY', 'function', 'stop']
+          ],
+          options
+        ],
+        // I don't think excel supports this at all but google sheets does
+        [
+          '{{1;2};{3;4}}',
+          [
+            ['ARRAY', 'function', 'start'],
+            ['ARRAYROW', 'function', 'start'],
+            ['ARRAY', 'function', 'start'],
+            ['ARRAYROW', 'function', 'start'],
+            ['1', 'operand', 'number'],
+            ['ARRAYROW', 'function', 'stop'],
+            [';', 'argument', ''],
+            ['ARRAYROW', 'function', 'start'],
+            ['2', 'operand', 'number'],
+            ['ARRAYROW', 'function', 'stop'],
+            ['ARRAY', 'function', 'stop'],
+            ['ARRAYROW', 'function', 'stop'],
+            [';', 'argument', ''],
+            ['ARRAYROW', 'function', 'start'],
+            ['ARRAY', 'function', 'start'],
+            ['ARRAYROW', 'function', 'start'],
+            ['3', 'operand', 'number'],
+            ['ARRAYROW', 'function', 'stop'],
+            [';', 'argument', ''],
+            ['ARRAYROW', 'function', 'start'],
+            ['4', 'operand', 'number'],
+            ['ARRAYROW', 'function', 'stop'],
+            ['ARRAY', 'function', 'stop'],
             ['ARRAYROW', 'function', 'stop'],
             ['ARRAY', 'function', 'stop']
           ],
