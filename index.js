@@ -445,7 +445,7 @@ function tokenize(formula, options) {
       tokens.addRef(tokenStack.pop(TOK_VALUE_ARRAYROW));
 
       if (tokenStack.type() == TOK_TYPE_FUNCTION) {
-        tokens.add(',', TOK_TYPE_ARGUMENT);
+        tokens.add(';', TOK_TYPE_ARGUMENT);
       }
 
       tokenStack.push(tokens.add(TOK_VALUE_ARRAYROW, TOK_TYPE_FUNCTION, TOK_SUBTYPE_START));
