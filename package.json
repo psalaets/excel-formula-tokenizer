@@ -1,6 +1,6 @@
 {
   "name": "excel-formula-tokenizer",
-  "version": "2.4.0",
+  "version": "3.0.0",
   "description": "Tokenize Excel formulas",
   "main": "index.js",
   "typings": "index.d.ts",

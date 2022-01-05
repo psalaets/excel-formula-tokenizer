@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0] - 2022-01-04
+
+Thanks to [@jlaramie](https://github.com/jlaramie) for all these changes.
+
+### Breaking
+
+- Changes to array output. See `test/arrays-test.js`.
+
+### Added
+
+- Definition for a generic en-EU language.
+- `options.preserveLanguage` to keep language-specific delimiters as well as TRUE/FALSE values
+- `options.asClass` - To return `Tokens` instance instead of `Tokens[]`.
+- Improved compatibility with other libraries
+
+### Fixed
+
+- [#6](https://github.com/psalaets/excel-formula-tokenizer/issues/6) - Quotes around named ranges with spaces are not
+  preserved
+- [#8](https://github.com/psalaets/excel-formula-tokenizer/issues/8) - Vertical range separator always being , instead
+  of ; in the tokens
+
 ## [2.4.0] - 2021-12-27
 
 ### Fixed
