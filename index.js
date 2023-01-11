@@ -161,6 +161,7 @@ class TokenStack {
  * @param {string} [options.language] - Defaults to en-US
  * @param {boolean} [options.preserveLanguage] - Defaults to false. When true language specific characters will be written to the token output instead of being normalized.
  * @param {boolean} [options.asClass] - Defaults to false. When true tokenize will reutrn the instantiated Tokens class instead of calling Tokens.toArray().
+ * @param {boolean} [options.keepPrefixOperators] - Defaults to false. When true prefix operators will be kept in the token output.
  * @returns {Token[]|Tokens} - If options.asClass is true then the Tokens class gets return. Otherwise this returns an array of Token objects.
  */
 function tokenize(formula, options) {
@@ -596,7 +597,7 @@ function tokenize(formula, options) {
 
     if (token.type == TOK_TYPE_OP_IN && token.value == '+') {
       if (tokens2.BOF()) {
-        token.type = TOK_TYPE_NOOP;
+        token.type = options.keepPrefixOperators ? TOK_TYPE_OP_PRE : TOK_TYPE_NOOP;
       } else if (
         (tokens2.previous().type == TOK_TYPE_FUNCTION && tokens2.previous().subtype == TOK_SUBTYPE_STOP) ||
         (tokens2.previous().type == TOK_TYPE_SUBEXPR && tokens2.previous().subtype == TOK_SUBTYPE_STOP) ||
