@@ -99,5 +99,60 @@ describe('functions', function () {
         ]
       ].forEach(itBlock);
     });
+
+    describe('fr-FR', function () {
+      var options = {
+        language: 'fr-FR'
+      };
+
+      [
+        [
+          'AUJOURDHUI()',
+          [
+            ['AUJOURDHUI', 'function', 'start'],
+            ['', 'function', 'stop']
+          ]
+        ],
+        [
+          '=SI(VRAI;1,1;1,2)',
+          [
+            ['SI', 'function', 'start'],
+            ['TRUE', 'operand', 'logical'],
+            [',', 'argument', ''],
+            ['1.1', 'operand', 'number'],
+            [',', 'argument', ''],
+            ['1.2', 'operand', 'number'],
+            ['', 'function', 'stop']
+          ],
+          options
+        ],
+        [
+          'SOMME(1; 2)',
+          [
+            ['SOMME', 'function', 'start'],
+            ['1', 'operand', 'number'],
+            [',', 'argument', ''],
+            ['2', 'operand', 'number'],
+            ['', 'function', 'stop']
+          ],
+          options
+        ],
+        [
+          'SOMME(1; SOMME(2; 3))',
+          [
+            ['SOMME', 'function', 'start'],
+            ['1', 'operand', 'number'],
+            [',', 'argument', ''],
+            ['SOMME', 'function', 'start'],
+            ['2', 'operand', 'number'],
+            [',', 'argument', ''],
+            ['3', 'operand', 'number'],
+            ['', 'function', 'stop'],
+            ['', 'function', 'stop']
+          ],
+          options
+        ]
+      ].forEach(itBlock);
+    });
   });
 });

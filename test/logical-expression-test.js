@@ -17,5 +17,16 @@ describe('logical expressions', function () {
         ['FALSCH', [['FALSE', 'operand', 'logical']], options]
       ].forEach(itBlock);
     });
+
+    describe('fr-FR', function () {
+      var options = {
+        language: 'fr-FR'
+      };
+
+      [
+        ['VRAI', [['TRUE', 'operand', 'logical']], options],
+        ['FAUX', [['FALSE', 'operand', 'logical']], options]
+      ].forEach(itBlock);
+    });
   });
 });
